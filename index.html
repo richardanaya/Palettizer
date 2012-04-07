@@ -46,11 +46,11 @@
             }
 
             $('#output').html('');
-            $('#output').append('var palette = {<br>');
+            $('#output').append('var palette = [<br>');
             for(var p in colors){
                 $('#output').append('"'+colors[p]+'"<br>');
             }
-            $('#output').append('}<br><br>');
+            $('#output').append('];<br><br>');
             for(var p in colors){
                 $('#output').append('<div class="colorCube" style="background-color:'+colors[p]+'"></div>');
             }

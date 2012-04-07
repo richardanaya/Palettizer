@@ -76,9 +76,15 @@
                 return a.hsv[0]-b.hsv[0];
             });
             $('#output').html('');
-            $('#output').append('var palette = [<br>');
+            $('#output').append('var palette = [');
             for(var p in colors){
-                $('#output').append('"'+colors[p].color+'"<br>');
+	    	if(p != colors.length-1) {
+                 	$('#output').append('"'+colors[p].color+'",');
+
+		}
+		else {
+                 	$('#output').append('"'+colors[p].color+'"');
+			}
             }
             $('#output').append('];<br><br>'+colors.length+' colors:<br>');
             for(var p in colors){

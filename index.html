@@ -13,6 +13,34 @@
 <img src="test.png">
 <br>
 <script>
+    function rgbToHsv(r, g, b) {
+        var
+            min = Math.min(r, g, b),
+            max = Math.max(r, g, b),
+            delta = max - min,
+            h, s, v = max;
+
+        v = Math.floor(max / 255 * 100);
+        if ( max != 0 )
+            s = Math.floor(delta / max * 100);
+        else {
+            // black
+            return [0, 0, 0];
+        }
+
+        if( r == max )
+            h = ( g - b ) / delta;         // between yellow & magenta
+        else if( g == max )
+            h = 2 + ( b - r ) / delta;     // between cyan & yellow
+        else
+            h = 4 + ( r - g ) / delta;     // between magenta & cyan
+
+        h = Math.floor(h * 60);            // degrees
+        if( h < 0 ) h += 360;
+
+        return [h, s, v];
+    }
+
     window.blah = function (url) {
         var img = new Image();
         $(img).load(function () {
@@ -35,24 +63,26 @@
                 var col = '#' + r + g + b;
                 var found = false;
                 for(var j = 0 ; j < colors.length; j++){
-                    if(colors[j] == col) {
+                    if(colors[j].color == col) {
                         found = true;
                         break;
                     }
                 }
                 if(!found){
-                    colors.push(col);
+                    colors.push({color:col,r:imgURL[index + 0],g:imgURL[index + 1],b:imgURL[index + 2],hsv:rgbToHsv(imgURL[index + 0],imgURL[index + 1],imgURL[index + 2])});
                 }
             }
-
+            colors.sort(function(a,b){
+                return a.hsv[0]-b.hsv[0];
+            });
             $('#output').html('');
             $('#output').append('var palette = [<br>');
             for(var p in colors){
-                $('#output').append('"'+colors[p]+'"<br>');
+                $('#output').append('"'+colors[p].color+'"<br>');
             }
             $('#output').append('];<br><br>');
             for(var p in colors){
-                $('#output').append('<div class="colorCube" style="background-color:'+colors[p]+'"></div>');
+                $('#output').append('<div class="colorCube" style="background-color:'+colors[p].color+'"></div>');
             }
         });
         img.src = url;

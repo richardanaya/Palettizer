@@ -1,0 +1,67 @@
+<html>
+<head>
+    <script src="jquery-1.7.2.min.js"></script>
+    <style>
+        .colorCube {
+            width:20px;
+            height: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<img src="test.png">
+<br>
+<script>
+    window.blah = function (url) {
+        var img = new Image();
+        $(img).load(function () {
+            var c = document.createElement('canvas');
+            c.width = img.width;
+            c.height = img.height;
+            var ctx = c.getContext('2d');
+            ctx.drawImage(this, 0, 0);
+
+            var imgURL = ctx.getImageData(0, 0, img.width, img.height).data;
+            var colors = [];
+            for (var i = 0; i < imgURL.length / 4; i++) {
+                var index = i * 4;
+                var r = imgURL[index + 0].toString(16);
+                var g = imgURL[index + 1].toString(16);
+                var b = imgURL[index + 2].toString(16);
+                if (r.length == 1) r = '0' + r;
+                if (g.length == 1) g = '0' + g;
+                if (b.length == 1) b = '0' + b;
+                var col = '#' + r + g + b;
+                var found = false;
+                for(var j = 0 ; j < colors.length; j++){
+                    if(colors[j] == col) {
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found){
+                    colors.push(col);
+                }
+            }
+
+            $('#output').html('');
+            $('#output').append('var palette = {<br>');
+            for(var p in colors){
+                $('#output').append('"'+colors[p]+'"<br>');
+            }
+            $('#output').append('}<br><br>');
+            for(var p in colors){
+                $('#output').append('<div class="colorCube" style="background-color:'+colors[p]+'"></div>');
+            }
+        });
+        img.src = url;
+    };
+
+    blah('test.png');
+</script>
+<div id="output">
+
+</div>
+</body>
+</html>
